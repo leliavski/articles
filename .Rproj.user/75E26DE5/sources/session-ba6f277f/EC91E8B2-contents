@@ -1,8 +1,6 @@
 ---
-title: "index"
+title: "The Shape of Data: A Guide to Persistent Homology"
 ---
-
-# The Shape of Data: A Guide to Persistent Homology and the Algebra of Holes
 
 In the life sciences, we are often drowning in high-dimensional data—protein folding trajectories, gene expression profiles, or neural firing patterns. Traditionally, we use statistics to find averages, but **Topological Data Analysis (TDA)** asks a more fundamental question: **What is the shape of this data?**
 
