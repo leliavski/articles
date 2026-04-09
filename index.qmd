@@ -1,0 +1,14 @@
+---
+title: "articles"
+type: grid
+---
+
+This is a Quarto website.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+
+Here is a link to my first article about [persistent homology](ph-dive/index.qmd).
+
+```{r}
+1 + 1
+```
