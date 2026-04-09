@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
     "objectID": "ph-dive/index.html",
     "href": "ph-dive/index.html",
     "title": "The Shape of Data: A Guide to Persistent Homology",
@@ -47,13 +54,6 @@
     "title": "The Shape of Data: A Guide to Persistent Homology",
     "section": "Appendix: Suggested Visualizations",
     "text": "Appendix: Suggested Visualizations\nFigure 1: The Birth of a Simplex\n\nLegend: The evolution of a Vietoris-Rips complex. (A) Isolated points at \\(\\epsilon=0\\). (B) Edges appearing as circles of radius \\(\\epsilon/2\\) overlap. (C) A 2-simplex (face) filling the triangle as all three circles mutually overlap.\n\nFigure 2: The Matrix-Graph Mapping\n\nLegend: Mapping a directed graph to a boundary matrix. Each column in \\(\\partial_1\\) corresponds to a directed edge; a \\(-1\\) represents the source vertex, while a \\(1\\) represents the target vertex.\n\nFigure 3: Cycles vs. Boundaries\n\nLegend: A visualization of the “Boundary of a Boundary is Zero” rule. A path (chain) has distinct endpoints, but a cycle (kernel element) has a net zero boundary at every vertex.\n\nFigure 4: The Persistence Barcode\n\nLegend: A TDA barcode representing the life of topological features. Short bars represent noise (small gaps), while the long bar for \\(H_1\\) represents the persistent hole of the triangle before it is filled by a face at a higher \\(\\epsilon\\)."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
   {
     "objectID": "index.html",
