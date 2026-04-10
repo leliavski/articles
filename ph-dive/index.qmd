@@ -2,15 +2,31 @@
 title: "The Shape of Data: A Guide to Persistent Homology"
 ---
 
-In the life sciences, we are often drowning in high-dimensional data—protein folding trajectories, gene expression profiles, or neural firing patterns. Traditionally, we use statistics to find averages, but **Topological Data Analysis (TDA)** asks a more fundamental question: **What is the shape of this data?**
+**Persistent homology** (PH) is a popular method of **topological data analysis (TDA)** to find topological features in high-dimensional data. By "topological features" (structures, patterns, shapes, etc.) we mean the properties of geometric shapes and spaces that remain *unchanged under continuous deformations* like stretching, bending, or twisting. Examples of distinct 2D topological objects include line, branching structures (like letters K, H, F, E), and objects with holes (like D, B, A, R, 8, etc.). Sphere, torus (with one or several holes) are examples of 3D objects with distinct topological properties.
 
-If you can prove that a set of data points forms a "circle" rather than a "line," you’ve discovered a periodic cycle or a feedback loop that might be hidden by noise. This article deconstructs the algebraic and linear machinery that turns "points" into "proof."
+Biological data hide various topological structures. Cell states are point attractors, cell differentiation trajectory is a line with two or more branches, cell cycle or circadian rhythm are examples of circular objects. PH is especially good at finding holes and voids in data.
+
+The procedure we'll describe below includes the following **steps**.
+
+1.  Connect the data points into a collection of "Russian-doll" graphs, each one containing the previous ones.
+
+2.  Analyze each graph for the presence of topological features: lines, cycles, surfaces and holes.
+
+3.  Plot the identified topological features to see which of them are transient and which are present ("persist") in a longer sequence of the "Russian-doll" graphs.
+
+4.  Assess the persistent features to make a conclusion about the overall topological structure of the data set.
+
+This tutorial mostly focuses on the step 2, how to find shapes in a graph. This is where the magic is hidden and this is what **algebraic topology** does. As a reminder, a graph consists of **vertices** (nodes or "points") and **edges** (lines or connections between vertices). We will work with simple 2D objects to make the analysis more tangible. In brief, the structure of a graph (its vertices and edges) is converted into a matrix, which describes how to map edges (2D structures) onto vertices (1D structures). For higher dimensions, there are more matrices that map n-dimensional structures onto a lower, (n-1) dimension. These matrices contain enough information to figure out whether points are connected into a cycle and form a boundary, and whether such a boundary has a hole in it. Linear algebra sheds the light onto a graph's shape. This is why it is called "algebraic topology".
+
+One final remark before we start. This tutorial is written by an experimental biologist, not a mathematician or data scientist. It comes as a result of extensive conversations with Gemini Pro and my readings on the topic. My intention is to digest it for a person with minimal math background, like myself.
+
+Data points get connected into a graph (a network) based on a selected distance measure. By increasing the distance threshold needed to connect two points, the data points become more and more connected. Eventually, all points are connected. We generate a series of graphs, the next graph includes the previous ones. Formally, it is called a "filtration" — a collection of sets, each one containing the previous ones. Informally, think of Russian dolls (matryoshkas).
 
 ------------------------------------------------------------------------
 
 ## 1. The Vocabulary of Shape
 
-To perform mathematics on a shape, we first turn a "fuzzy" cloud of points into a rigid structure called a **Simplicial Complex**.
+To perform mathematics on a shape, we first turn a cloud of points into a rigid structure called a **Simplicial Complex**.
 
 ### The $n$-Simplex: The Building Blocks
 
@@ -26,7 +42,7 @@ Think of a simplex as a generalized triangle. We build complex shapes out of the
 
 ### The Vietoris-Rips (VR) Complex
 
-In a lab, you don't start with triangles; you start with a point cloud. To build a shape, we use a distance parameter $\epsilon$ (epsilon):
+To connect data points and form a simplicial complex, we use a distance parameter $\epsilon$ (epsilon):
 
 1.  Draw a ball of radius $\epsilon/2$ around every point.
 
@@ -34,7 +50,7 @@ In a lab, you don't start with triangles; you start with a point cloud. To build
 
 3.  If three balls mutually overlap, fill in a **2-simplex** (face).
 
-The resulting "LEGO structure" is the **Vietoris-Rips Complex**. The $n$-skeleton refers to the collection of all simplices up to dimension $n$ (e.g., the 1-skeleton is the graph of vertices and edges).
+The resulting structure is the **Vietoris-Rips Complex**. The $n$-skeleton refers to the collection of all simplices up to dimension $n$ (e.g., the 1-skeleton is the graph of vertices and edges).
 
 ------------------------------------------------------------------------
 
@@ -43,6 +59,8 @@ The resulting "LEGO structure" is the **Vietoris-Rips Complex**. The $n$-skeleto
 Once we have our complex, we turn it into something a computer can calculate using **Chain Groups** ($C_n$).
 
 A **Chain** is a formal sum of all simplices of a certain dimension. If we have three edges, the chain space $C_1$ is a vector space where each edge is a basis vector (an axis). Any path in the graph is just a vector in this space.
+
+*A linear algebra reminder*: **Basis vectors** are linearly independent vectors that span a complete vector space. For example, any two vectors on a 2D plane (i.e. a 2D vector space) are **linearly independent** if they do not sit on the same line but rather point to different directions. Using linear combinations of these vectors, one can make any other vector on that plane. In other words, this set of vectors **spans** the vector space.
 
 ### The Boundary Operator ($\partial_n$)
 
@@ -54,19 +72,19 @@ The boundary operator is a linear map (represented as a matrix) that takes an $n
 
 **The Fundamental Identity:** $\partial_n \circ \partial_{n+1} = 0$.
 
-This means the "boundary of a boundary is zero." A closed loop doesn't have an "end point." This identity is the "secret sauce" that allows us to find holes.
+This means the **"boundary of a boundary is zero."** A boundary by definition cannot have a break or hole in it, otherwise it's not a boundary. A closed loop doesn't have an "end point." A sphere does not contain an edge. This identity is the magic tool that allows us to find holes.
 
 ------------------------------------------------------------------------
 
 ## 3. The Linear Algebra Machinery
 
-The goal of TDA is to calculate **Betti Numbers** ($\beta_n$), which count the holes:
+The goal of PH is to calculate **Betti Numbers** ($\beta_n$), which count the holes:
 
 -   $\beta_0$: Number of connected components (islands).
 
--   $\beta_1$: Number of 1D holes (circles/tunnels).
+-   $\beta_1$: Number of 1D holes (circles or tunnels).
 
--   $\beta_2$: Number of 2D voids (bubbles/cavities).
+-   $\beta_2$: Number of 2D voids (bubbles, cavities or voids).
 
 To find these, we analyze two specific subspaces:
 
@@ -92,12 +110,7 @@ Let’s prove that three connected points $\{v_0, v_1, v_2\}$ and three edges $\
 
 Rows are vertices ($C_0$) and columns are edges ($C_1$). We assign directions ($v_0 \to v_1$, $v_1 \to v_2$, $v_0 \to v_2$) to allow for algebraic cancellation.
 
-\$\$\\partial_1 =
-\\begin{pmatrix}
--1 & 0 & -1 \\\\
-1 & -1 & 0 \\\\
-0 & 1 & 1
-\\end{pmatrix}\$\$
+\$\$\\partial_1 = \\begin{pmatrix} -1 & 0 & -1 \\\\ 1 & -1 & 0 \\\\ 0 & 1 & 1 \\end{pmatrix}\$\$
 
 ### Step B: Gaussian Elimination
 
